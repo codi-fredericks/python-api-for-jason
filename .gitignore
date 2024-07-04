@@ -1,2 +1,5 @@
 # Ignore data contents
 data/*
+
+# Except the folder itself
+!myfolder/
