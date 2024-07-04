@@ -21,6 +21,9 @@ class BreachersUser:
         self.clanTag = clanTag
         self.fullUserName = fullUserName
 
+    def __repr__(self):
+        return f"<BreachersUser id={self.id}, userName={self.userName}, clanTag={self.clanTag}, fullUserName={self.fullUserName}>"
+
 def search_users(username, json=False):
     '''
     `username` The name of a breachers user\n
@@ -66,13 +69,17 @@ def get_user(BreachersUserId, json=False):
 #                                                                                                    
 #                                                                                                    
 
-class Match():
+class BreachersMatch():
     def __init__(self, id, players, timestamp, game_data):
         self.id = id
         self.players = players
         self.timestamp = timestamp #UTC
         self.game_data = self.MatchData(**game_data)
     
+    def __repr__(self):
+        return(
+            f"<BreachersMatch id={self.id}, players={self.players}, timestamp={self.timestamp}, game_data={self.game_data}>"
+        )
     class MatchData():
         def __init__(self, MapName, matchMode ,matchType, players, playersLeft, allPlayers):
             self.MapName = MapName
@@ -87,6 +94,11 @@ class Match():
             self.allPlayers = []
             for player in allPlayers:
                 self.allPlayers.append(self.MatchPlayer(**player))
+        
+        def __repr__(self):
+            return(
+                f"<MatchData MapName={self.MapName}, matchMode={self.matchMode}, matchType={self.matchType}, players={self.players}, playersLeft={self.playersLeft}, allPlayers={self.allPlayers}>"
+            )
         
         class MatchPlayer():
             def __init__(self, ApiId, clanTag, GameMatchDataResult, score, gameTimeInSeconds, gameTime, mvp, penaltyReason, rounds, timeAfk, Username):
@@ -104,6 +116,12 @@ class Match():
                 self.timeAfk = timeAfk
                 self.Username = Username
             
+            def __repr__(self):
+                return(
+                    f"<MatchPlayer ApiId={self.ApiId}, clanTag={self.clanTag}, GameMatchDataResult={self.GameMatchDataResult}, score={self.score}, gameTimeInSeconds={self.gameTimeInSeconds}, "
+                    f"gameTime={self.gameTime}, mvp={self.mvp}, penaltyReason={self.penaltyReason}, rounds={self.rounds}, timeAfk={self.timeAfk}, Username={self.Username}>"
+                )
+            
             class MatchPlayerRound():
                 def __init__(self, ace, assists, botAssists, deaths, firstBlood, mvp, roundNumber, roundTime, team, teamWon, gadgets, weapons):
                     self.ace = ace
@@ -118,10 +136,16 @@ class Match():
                     self.teamWon = teamWon
                     self.gadgets = []
                     for gadget in gadgets:
-                        self.gadgets.append(Gadget(**gadget))
+                        self.gadgets.append(BreachersGadget(**gadget))
                     self.weapons = []
                     for weapon in weapons:
-                        self.weapons.append(Weapon(**weapon))
+                        self.weapons.append(BreachersWeapon(**weapon))
+                
+                def __repr__(self):
+                    return(
+                        f"<MatchPlayerRound ace={self.ace}, assists={self.assists}, botAssists={self.botAssists}, deaths={self.deaths}, firstBlood={self.firstBlood}, mvp={self.mvp}, "
+                        f"roundNumber={self.roundNumber}, roundTime={self.roundTime}, team={self.team}, teamWon={self.teamWon}, gadgets={self.gadgets}, weapons={self.weapons}"
+                    )
 
 def get_user_match(BreachersUserId, json=False):
     '''
@@ -138,7 +162,7 @@ def get_user_match(BreachersUserId, json=False):
         else:
             matches = []
             for i in result.json():
-                matches.append(Match(**i))
+                matches.append(BreachersMatch(**i))
             return matches
     else:
         raise ValueError(f"Request error {result.status_code}")
@@ -146,7 +170,7 @@ def get_user_match(BreachersUserId, json=False):
 
 
 
-class Gadget():
+class BreachersGadget():
     def __init__(self, Name, botDamageDone, botKills, damageDone, destroyed, enemyTriggered, friendlyDamageDone, kills, teamHealed, triggered, used):
         self.Name = Name
         self.botDamageDone = botDamageDone
@@ -159,8 +183,13 @@ class Gadget():
         self.teamHealed = teamHealed
         self.triggered = triggered
         self.used = used
-
-class Weapon():
+    
+    def __repr__(self):
+        return (f"<BreachersGadget Name={self.Name}, botDamageDone={self.botDamageDone}, botKills={self.botKills}, damageDone={self.damageDone}, "
+        f"destroyed={self.destroyed}, enemyTriggered={self.enemyTriggered}, friendlyDamageDone={self.friendlyDamageDone}, kills={self.kills}, "
+        f"teamHealed={self.teamHealed}, triggered={self.triggered}, used={self.used}>"
+        )
+class BreachersWeapon():
     def __init__(self, Name, botDamageDone, botHeadshotKills, botKills, damageDone, friendlyDamageDone, headshotKills, shotsFired, totalHeadshots, totalKills, totalShotsHit):
         self.Name = Name
         self.botDamageDone = botDamageDone
@@ -173,3 +202,9 @@ class Weapon():
         self.totalHeadshots = totalHeadshots
         self.totalKills = totalKills
         self.totalShotsHit = totalShotsHit
+    
+    def __repr__(self):
+        return (f"<BreachersWeapon Name={self.Name}, botDamageDone={self.botDamageDone} botHeadshotKills={self.botHeadshotKills}, botKills={self.botKills}, "
+                f"damageDone={self.damageDone}, friendlyDamageDone={self.friendlyDamageDone}, headshotKills={self.headshotKills}, shotsFired={self.shotsFired}, "
+                f"totalHeadshots={self.totalHeadshots}, totalKills={self.totalKills}, totalShotsHit={self.totalShotsHit}>"
+        )
